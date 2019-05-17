@@ -1,0 +1,39 @@
+Option Explicit
+Public objConnnection As ADODB.Connection
+Public objRecordset As ADODB.Recordset
+Public objCommand As ADODB.Command
+Private Sub Class_Initialize()
+    Dim strConnectionString As String
+    Dim strFullName As String
+    Dim strPfad As String
+    Dim strDataSource As String
+    
+    Set objConnnection = New ADODB.Connection
+    Set objRecordset = New ADODB.Recordset
+    Set objCommand = New ADODB.Command
+           
+    strPfad = "N:\01 Leben\Rechenhilfen\Tarifrechner\Datenbanken\"
+    strFullName = strPfad & "LebenBuz.accdb"
+    
+    strConnectionString = "PROVIDER=Microsoft.ACE.OLEDB.12.0;Data Source=" & strFullName & ";"
+    objConnnection.ConnectionString = strConnectionString
+    objConnnection.Open
+    
+    objRecordset.ActiveConnection = objConnnection
+    objRecordset.LockType = adLockOptimistic
+    objRecordset.CursorType = adOpenStatic
+    
+    objCommand.ActiveConnection = objConnnection
+    objCommand.CommandType = adCmdText
+End Sub
+Private Sub Class_Terminate()
+    If objRecordset.State = adStateOpen Then
+        objRecordset.Close
+    End If
+    objConnnection.Close
+    
+    Set objRecordset = Nothing
+    Set objCommand = Nothing
+    Set objConnnection = Nothing
+End Sub
+
