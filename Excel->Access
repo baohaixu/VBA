@@ -1,0 +1,57 @@
+    Dim objExcel As Object
+    Dim objWorksheet As Object
+    Dim objRangeZelleOben As Object
+    Dim objRangeZelleUnten As Object
+    Dim objRangeSpalte As Object
+    Dim objRangeZelleLfd As Object
+    
+    On Error Resume Next
+    Set objExcel = GetObject(, "Excel.Application")
+    On Error GoTo 0
+    If objExcel Is Nothing Then
+        MsgBox "Excel nicht gefunden!"
+        boolErfolgreich = False
+        Exit Sub
+    End If
+    On Error Resume Next
+    Set objWorkbook = objExcel.workbooks(strWorkbook)
+    On Error GoTo 0
+    If objWorkbook Is Nothing Then
+        boolErfolgreich = False
+        MsgBox strWorkbook & " nicht gefunden!"
+        Exit Sub
+    End If
+    
+    Set objWorksheet = objWorkbook.worksheets("Konsole")
+    Set objRangeZelleOben = objWorksheet.range("B2")
+    Set objRangeZelleUnten = objRangeZelleOben.End(xlDown)
+    Set objRangeSpalte = objWorksheet.range(objRangeZelleOben, objRangeZelleUnten)
+    
+    abschalten objExcel
+    For Each objRangeZelleLfd In objRangeSpalte
+        If Not IsEmpty(objRangeZelleLfd) Then
+            On Error Resume Next
+            objRangeZelleLfd.offset(0, 1).Value = Trim(objRecordset.Fields(objRangeZelleLfd.Value).Value)
+            On Error GoTo 0
+        End If
+    Next objRangeZelleLfd
+    einschalten objExcel
+
+    boolErfolgreich = True
+End Sub
+
+Sub abschalten(objApp As Object)
+    With objApp
+        .ScreenUpdating = False
+        .EnableEvents = False
+        .Calculation = xlCalculationManual
+    End With
+End Sub
+Sub einschalten(objApp As Object)
+    With objApp
+        .ScreenUpdating = True
+        .EnableEvents = True
+        .Calculation = xlCalculationAutomatic
+    End With
+End Sub
+
