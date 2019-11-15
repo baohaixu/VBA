@@ -1,0 +1,55 @@
+Option Explicit
+Public objConnnection As Object
+Public objRecordset As Object
+Public objCommand As Object
+Const adLockOptimistic = 3
+Const adOpenStatic = 3
+Const adCmdText = 1
+Const adStateOpen = 1
+Private Sub Class_Initialize()
+    Dim strProvider
+    Dim strDataSource
+    Dim strUserID
+    Dim strPassword
+    
+    ' New ADODB.Connection
+    Set objConnnection = CreateObject("ADODB.Connection")
+    Set objRecordset = CreateObject("ADODB.RecordSet")
+    Set objCommand = CreateObject("ADODB.Command")
+
+    strProvider = ThisWorkbook.Names("Provider").RefersToRange.Value
+    strDataSource = ThisWorkbook.Names("Data_Source").RefersToRange.Value
+    strUserID = ThisWorkbook.Names("User_ID").RefersToRange.Value
+    strPassword = ThisWorkbook.Names("Password").RefersToRange.Value
+    
+    objConnnection.ConnectionString = "Provider=" & strProvider & ";Data Source=" & strDataSource & ";User ID=" & strUserID & "; Password=" & strPassword & ";"
+    objConnnection.Open
+'    objConnnection.Open ( _
+'    "User ID=angebo" & _
+'    ";Password=sbipangebo" & _
+'    ";Data Source=te20c" & _
+'    ";Provider=OraOLEDB.Oracle")
+    objRecordset.ActiveConnection = objConnnection
+    objRecordset.LockType = adLockOptimistic
+    objRecordset.CursorType = adOpenStatic
+    'objRecordset.CursorType = adOpenForwardOnly
+    
+    objCommand.ActiveConnection = objConnnection
+    objCommand.CommandType = adCmdText
+    
+End Sub
+
+Private Sub Class_Terminate()
+    If objRecordset.State = adStateOpen Then
+        objRecordset.Close
+    End If
+
+    objConnnection.Close
+    
+    Set objRecordset = Nothing
+    Set objCommand = Nothing
+    Set objConnnection = Nothing
+End Sub
+Sub Commit()
+    objConnnection.CommitTrans
+End Sub
