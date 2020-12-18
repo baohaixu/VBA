@@ -1,19 +1,24 @@
 Option Explicit
-Public objConnnection As ADODB.Connection
-Public objRecordset As ADODB.Recordset
-Public objCommand As ADODB.Command
+Public objConnnection As Object
+Public objRecordset As Object
+Public objCommand As Object
+Const adLockOptimistic = 3
+Const adOpenStatic = 3
+Const adCmdText = 1
+Const adStateOpen = 1
 Private Sub Class_Initialize()
     Dim strConnectionString As String
     Dim strFullName As String
     Dim strPfad As String
-    Dim strDataSource As String
+    Dim strAccessDB As String
     
-    Set objConnnection = New ADODB.Connection
-    Set objRecordset = New ADODB.Recordset
-    Set objCommand = New ADODB.Command
-           
-    strPfad = "N:\01 Leben\Rechenhilfen\Tarifrechner\Datenbanken\"
-    strFullName = strPfad & "LebenBuz.accdb"
+    Set objConnnection = CreateObject("ADODB.Connection")
+    Set objRecordset = CreateObject("ADODB.RecordSet")
+    Set objCommand = CreateObject("ADODB.Command")
+
+    strPfad = ThisWorkbook.Path
+    strAccessDB = ThisWorkbook.Names("AccessDB").RefersToRange.Value
+    strFullName = strPfad & "\" & strAccessDB
     
     strConnectionString = "PROVIDER=Microsoft.ACE.OLEDB.12.0;Data Source=" & strFullName & ";"
     objConnnection.ConnectionString = strConnectionString
@@ -30,6 +35,7 @@ Private Sub Class_Terminate()
     If objRecordset.State = adStateOpen Then
         objRecordset.Close
     End If
+
     objConnnection.Close
     
     Set objRecordset = Nothing
@@ -37,3 +43,15 @@ Private Sub Class_Terminate()
     Set objConnnection = Nothing
 End Sub
 
+Private Sub cmdBtnLos_Click()
+    Dim objDatenbank As clsAccessDB
+    Dim strSQL As String
+    Dim objWorksheet As Excel.Worksheet
+    
+    Set objDatenbank = New clsAccessDB
+    strSQL = "SELECT * from qryEinahmeMitKW"
+    objDatenbank.objRecordset.Source = strSQL
+    objDatenbank.objRecordset.Open
+    Set objWorksheet = ThisWorkbook.Worksheets(strBlattName)
+    objWorksheet.Range("A2").CopyFromRecordset objDatenbank.objRecordset
+End Sub
