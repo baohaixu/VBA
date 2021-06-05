@@ -11,7 +11,7 @@ Private Sub Class_Initialize()
     Dim strFullName As String
     Dim strPfad As String
     Dim strAccessDB As String
-    
+
     Set objConnnection = CreateObject("ADODB.Connection")
     Set objRecordset = CreateObject("ADODB.RecordSet")
     Set objCommand = CreateObject("ADODB.Command")
@@ -19,15 +19,15 @@ Private Sub Class_Initialize()
     strPfad = ThisWorkbook.Path
     strAccessDB = ThisWorkbook.Names("AccessDB").RefersToRange.Value
     strFullName = strPfad & "\" & strAccessDB
-    
+
     strConnectionString = "PROVIDER=Microsoft.ACE.OLEDB.12.0;Data Source=" & strFullName & ";"
     objConnnection.ConnectionString = strConnectionString
     objConnnection.Open
-    
+
     objRecordset.ActiveConnection = objConnnection
     objRecordset.LockType = adLockOptimistic
     objRecordset.CursorType = adOpenStatic
-    
+
     objCommand.ActiveConnection = objConnnection
     objCommand.CommandType = adCmdText
 End Sub
@@ -37,7 +37,7 @@ Private Sub Class_Terminate()
     End If
 
     objConnnection.Close
-    
+
     Set objRecordset = Nothing
     Set objCommand = Nothing
     Set objConnnection = Nothing
@@ -47,7 +47,7 @@ Private Sub cmdBtnLos_Click()
     Dim objDatenbank As clsAccessDB
     Dim strSQL As String
     Dim objWorksheet As Excel.Worksheet
-    
+
     Set objDatenbank = New clsAccessDB
     strSQL = "SELECT * from qryEinahmeMitKW"
     objDatenbank.objRecordset.Source = strSQL
