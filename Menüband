@@ -1,0 +1,42 @@
+Option Explicit
+Sub EigenesMenue()
+    Dim MenueNeu As CommandBarControl
+    Dim Unterpunkt As CommandBarButton
+    
+    Application.CommandBars(1).Reset
+    Set MenueNeu = Application.CommandBars(1).Controls.Add(Type:=msoControlPopup, Temporary:=True)
+    With MenueNeu
+        .Caption = "&Zellenfärben"
+        .BeginGroup = True
+    End With
+    
+    Set Unterpunkt = MenueNeu.Controls.Add(msoControlButton, Temporary:=True)
+    With Unterpunkt
+        .Caption = "Hintergrund rot"
+        .Visible = True
+        .OnAction = "zelle_rot"
+    End With
+    Set Unterpunkt = MenueNeu.Controls.Add(msoControlButton, Temporary:=True)
+    With Unterpunkt
+        .Caption = "Hintergrund blau"
+        .Visible = True
+        .OnAction = "zelle_blau"
+    End With
+    Set Unterpunkt = MenueNeu.Controls.Add(msoControlButton, Temporary:=True)
+    With Unterpunkt
+        .Caption = "Ohne Hintergrund"
+        .Visible = True
+        .OnAction = "zelle_ohneHintergrund"
+    End With
+    
+End Sub
+
+Sub zelle_rot()
+    Selection.Interior.ColorIndex = 3
+End Sub
+Sub zelle_blau()
+    Selection.Interior.ColorIndex = 5
+End Sub
+Sub zelle_ohneHintergrund()
+    Selection.Interior.ColorIndex = 0
+End Sub
