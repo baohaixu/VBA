@@ -4,7 +4,7 @@ Sub KontextMenu()
     Dim Unterpunkt As CommandBarControl
         
     Call Eintrag_loeschen
-    
+    Rem Row/Column
     Set Hauptpunkt = Application.CommandBars("Cell").Controls.Add(Type:=msoControlPopup, Before:=1, Temporary:=True)
     With Hauptpunkt
         .Caption = "Meine Makros"
